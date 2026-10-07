@@ -593,6 +593,33 @@
             background: #dbb42f;
             transform: translateY(-1px);
         }
+        .contact-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        .contact-tab {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 10px 22px;
+            border-radius: 30px;
+            border: 1px solid var(--line-strong);
+            background: transparent;
+            color: var(--ink-dim);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .contact-tab:hover {
+            border-color: var(--gold);
+            color: var(--ink);
+        }
+        .contact-tab.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #14120F;
+        }
         .contact-links {
             display: flex;
             justify-content: center;
@@ -1059,8 +1086,14 @@
                 <h2>Have a project in mind? <em>Let's talk.</em></h2>
             </div>
 
-            <!-- Kontakt forma -->
-            <div class="contact-form reveal">
+            <!-- Tabovi za izbor načina kontakta -->
+            <div class="contact-tabs reveal">
+                <button type="button" class="contact-tab active" id="tabEmail" data-tab="email">✉️ Email</button>
+                <button type="button" class="contact-tab" id="tabWhatsapp" data-tab="whatsapp">💬 WhatsApp</button>
+            </div>
+
+            <!-- Kontakt forma: Email -->
+            <div class="contact-form reveal" id="formEmail">
                 <form action="https://formsubmit.co/kojic.dev@gmail.com" method="POST">
                     <!-- Zaštita od spam-a (CAPTCHA) -->
                     <input type="hidden" name="_captcha" value="true">
@@ -1082,6 +1115,19 @@
                     <textarea id="message" name="message" placeholder="Opiši ukratko šta ti treba..." required></textarea>
 
                     <button type="submit" class="btn btn-primary">✉️ Pošalji poruku</button>
+                </form>
+            </div>
+
+            <!-- Kontakt forma: WhatsApp -->
+            <div class="contact-form reveal" id="formWhatsapp" style="display:none;">
+                <form id="whatsappForm">
+                    <label for="wa-name">Tvoje ime *</label>
+                    <input type="text" id="wa-name" placeholder="Npr. Marko Marković" required>
+
+                    <label for="wa-message">Poruka *</label>
+                    <textarea id="wa-message" placeholder="Opiši ukratko šta ti treba..." required></textarea>
+
+                    <button type="submit" class="btn btn-primary">💬 Pošalji preko WhatsApp-a</button>
                 </form>
             </div>
 
@@ -1126,6 +1172,35 @@
                 mock.style.transform = '';
             });
         }
+
+        // Prebacivanje između Email i WhatsApp kontakt forme
+        const tabEmail = document.getElementById('tabEmail');
+        const tabWhatsapp = document.getElementById('tabWhatsapp');
+        const formEmail = document.getElementById('formEmail');
+        const formWhatsapp = document.getElementById('formWhatsapp');
+        tabEmail.addEventListener('click', () => {
+            tabEmail.classList.add('active');
+            tabWhatsapp.classList.remove('active');
+            formEmail.style.display = '';
+            formWhatsapp.style.display = 'none';
+        });
+        tabWhatsapp.addEventListener('click', () => {
+            tabWhatsapp.classList.add('active');
+            tabEmail.classList.remove('active');
+            formWhatsapp.style.display = '';
+            formEmail.style.display = 'none';
+        });
+
+        // WhatsApp forma: otvara WhatsApp sa već popunjenom porukom na broj +381612427872
+        const whatsappForm = document.getElementById('whatsappForm');
+        whatsappForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('wa-name').value.trim();
+            const message = document.getElementById('wa-message').value.trim();
+            const text = `Zdravo, ja sam ${name}.\n\n${message}`;
+            const waUrl = `https://wa.me/381612427872?text=${encodeURIComponent(text)}`;
+            window.open(waUrl, '_blank');
+        });
 
         const burger = document.getElementById('burger');
         const navLinks = document.getElementById('navLinks');
