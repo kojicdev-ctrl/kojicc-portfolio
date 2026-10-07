@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kojic.dev — Web Developer</title>
+    <meta name="description" content="Kojic.dev — I build websites and apps that actually do the job." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2314120F'/%3E%3Ccircle cx='50' cy='50' r='22' fill='%23C9A227'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #14120F;
+            --bg-alt: #1B1814;
+            --bg-card: #201C17;
+            --ink: #EDE7DB;
+            --ink-dim: #A79E8E;
+            --ink-faint: #6E695E;
+            --gold: #C9A227;
+            --gold-soft: rgba(201, 162, 39, 0.14);
+            --sage: #7CA184;
+            --line: rgba(237, 231, 219, 0.10);
+            --line-strong: rgba(237, 231, 219, 0.18);
+            --topclean-blue: #4A90D9;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+            .hero-anim { opacity: 1 !important; transform: none !important; }
+        }
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        ::selection {
+            background: var(--gold);
+            color: #14120F;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+        h1,
+        h2,
+        h3 {
+            font-family: 'Fraunces', serif;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+        em {
+            font-style: italic;
+            color: var(--gold);
+            font-weight: 400;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.02em;
+        }
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.035;
+            background-image: radial-gradient(circle, #EDE7DB 1px, transparent 1px);
+            background-size: 3px 3px;
+        }
+
+        /* ── Spotlight dot-grid background ── */
+        .spotlight-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: radial-gradient(rgba(237, 231, 219, 0.16) 1px, transparent 1px);
+            background-size: 26px 26px;
+            -webkit-mask-image: radial-gradient(320px 320px at var(--mx, 50%) var(--my, 30%), #000 0%, transparent 75%);
+            mask-image: radial-gradient(320px 320px at var(--mx, 50%) var(--my, 30%), #000 0%, transparent 75%);
+            transition: -webkit-mask-position 0.05s linear;
+        }
+        .spotlight-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(var(--gold) 1.5px, transparent 1.5px);
+            background-size: 26px 26px;
+            opacity: 0.55;
+            -webkit-mask-image: radial-gradient(140px 140px at var(--mx, 50%) var(--my, 30%), #000 0%, transparent 70%);
+            mask-image: radial-gradient(140px 140px at var(--mx, 50%) var(--my, 30%), #000 0%, transparent 70%);
+        }
+        @media (max-width: 860px) {
+            .spotlight-bg { display: none; }
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(20, 18, 15, 0.72);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 32px;
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .logo .dot {
+            color: var(--gold);
+            font-style: normal;
+        }
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            align-items: center;
+        }
+        .nav-links a {
+            font-size: 0.9rem;
+            color: var(--ink-dim);
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links a:hover,
+        .nav-links a:focus-visible {
+            color: var(--ink);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.25s;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--ink);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .hero {
+            padding: 180px 0 120px;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            left: 50%;
+            width: 640px;
+            height: 640px;
+            background: radial-gradient(circle, rgba(201,162,39,0.16) 0%, rgba(124,161,132,0.06) 45%, transparent 70%);
+            filter: blur(10px);
+            transform: translateX(-50%);
+            animation: driftGlow 14s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        @keyframes driftGlow {
+            0%, 100% { transform: translate(-58%, 0) scale(1); }
+            50% { transform: translate(-42%, 30px) scale(1.08); }
+        }
+        .hero-anim {
+            opacity: 0;
+            transform: translateY(18px);
+            animation: heroIn 0.8s ease forwards;
+        }
+        @keyframes heroIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--sage);
+            margin-bottom: 28px;
+        }
+        .eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sage);
+            box-shadow: 0 0 0 4px rgba(124, 161, 132, 0.15);
+            animation: pulseDot 2.2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(124, 161, 132, 0.15); }
+            50% { box-shadow: 0 0 0 8px rgba(124, 161, 132, 0.06); }
+        }
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 4.6rem);
+            line-height: 1.05;
+            max-width: 820px;
+            font-weight: 400;
+        }
+        .hero p {
+            margin-top: 28px;
+            max-width: 520px;
+            color: var(--ink-dim);
+            font-size: 1.08rem;
+        }
+        .hero-cta {
+            margin-top: 44px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.6s ease;
+        }
+        .btn:hover::before {
+            left: 125%;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: #14120F;
+        }
+        .btn-primary:hover {
+            background: #dbb42f;
+            transform: translateY(-1px);
+        }
+        .btn-ghost {
+            border-color: var(--line-strong);
+            color: var(--ink);
+        }
+        .btn-ghost:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        section {
+            padding: 100px 0;
+            position: relative;
+            z-index: 2;
+        }
+        .hero {
+            z-index: 2;
+        }
+        footer {
+            position: relative;
+            z-index: 2;
+        }
+        .section-head {
+            margin-bottom: 56px;
+        }
+        .section-tag {
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 14px;
+        }
+        .section-head h2 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 400;
+        }
+        .about {
+            border-top: 1px solid var(--line);
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 64px;
+            align-items: start;
+        }
+        .about-grid p {
+            color: var(--ink-dim);
+            font-size: 1.02rem;
+            margin-bottom: 18px;
+            max-width: 480px;
+        }
+        .stack-block {
+            background: var(--bg-card);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .stack-block-head {
+            display: flex;
+            gap: 8px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--line);
+            align-items: center;
+        }
+        .stack-block-head span {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--ink-faint);
+            opacity: 0.4;
+        }
+        .stack-block-body {
+            padding: 22px 24px;
+        }
+        .stack-line {
+            color: var(--ink-faint);
+            margin-bottom: 14px;
+        }
+        .stack-line b {
+            color: var(--sage);
+            font-weight: 500;
+        }
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 6px;
+        }
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            padding: 6px 12px;
+            border: 1px solid var(--line-strong);
+            border-radius: 2px;
+            color: var(--ink-dim);
+        }
+        .services {
+            border-top: 1px solid var(--line);
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 28px 26px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .service-card:hover {
+            border-color: var(--gold-soft);
+            transform: translateY(-3px);
+        }
+        .service-card .service-icon {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--gold);
+            font-size: 0.78rem;
+            margin-bottom: 14px;
+            display: block;
+        }
+        .service-card h3 {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .service-card p {
+            color: var(--ink-dim);
+            font-size: 0.92rem;
+        }
+        @media (max-width: 700px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .projects {
+            border-top: 1px solid var(--line);
+        }
+        .project-card {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 56px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+        .browser-mock {
+            background: var(--bg-card);
+            border: 1px solid var(--line-strong);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+            transform: rotate(-1.2deg);
+            transition: transform 0.4s ease;
+        }
+        .browser-mock:hover {
+            transform: rotate(0deg) translateY(-4px);
+        }
+        .browser-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 14px;
+            background: #171410;
+            border-bottom: 1px solid var(--line);
+        }
+        .browser-bar .dots {
+            display: flex;
+            gap: 6px;
+        }
+        .browser-bar .dots span {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #3a352c;
+        }
+        .browser-bar .url {
+            margin-left: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+            background: #14120F;
+            padding: 4px 12px;
+            border-radius: 20px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .browser-content {
+            padding: 26px 24px 32px;
+            background: linear-gradient(160deg, #0D1B2A 0%, #1B263B 100%);
+        }
+        .project-info .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--sage);
+            background: rgba(124, 161, 132, 0.08);
+            border: 1px solid rgba(124, 161, 132, 0.25);
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .status::before {
+            content: '●';
+            font-size: 0.6rem;
+        }
+        .project-info h3 {
+            font-size: 1.9rem;
+            margin-bottom: 14px;
+            font-weight: 400;
+        }
+        .project-info p {
+            color: var(--ink-dim);
+            margin-bottom: 22px;
+            max-width: 440px;
+        }
+        .project-info .tag-row {
+            margin-bottom: 26px;
+        }
+        .project-links {
+            display: flex;
+            gap: 14px;
+        }
+        .project-placeholder {
+            border: 1px dashed var(--line-strong);
+            border-radius: 8px;
+            padding: 48px 32px;
+            text-align: center;
+            color: var(--ink-faint);
+        }
+        .project-placeholder .mono {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--ink-faint);
+        }
+        .contact {
+            border-top: 1px solid var(--line);
+            text-align: center;
+        }
+        .contact .section-head {
+            margin-bottom: 40px;
+        }
+        .contact h2 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        /* ── Kontakt forma ── */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+            background: var(--bg-card);
+            padding: 36px 40px;
+            border: 1px solid var(--line-strong);
+            border-radius: 8px;
+        }
+        .contact-form label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--ink-dim);
+            margin-bottom: 4px;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg);
+            border: 1px solid var(--line-strong);
+            border-radius: 4px;
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: border 0.2s;
+            margin-bottom: 18px;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        .contact-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .contact-form .btn-primary {
+            width: 100%;
+            justify-content: center;
+            background: var(--gold);
+            color: #14120F;
+            border: none;
+            font-size: 1rem;
+            padding: 14px;
+        }
+        .contact-form .btn-primary:hover {
+            background: #dbb42f;
+            transform: translateY(-1px);
+        }
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            border-top: 1px solid var(--line);
+            padding: 32px 0;
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--ink-faint);
+            font-size: 0.85rem;
+        }
+        .footer-social {
+            display: flex;
+            gap: 18px;
+        }
+        .footer-social a {
+            color: var(--ink-faint);
+            transition: color 0.2s;
+        }
+        .footer-social a:hover {
+            color: var(--gold);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (max-width: 860px) {
+            .about-grid,
+            .project-card {
+                grid-template-columns: 1fr;
+                gap: 36px;
+            }
+            .project-card {
+                margin-bottom: 48px;
+            }
+            .nav-links {
+                position: fixed;
+                top: 63px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                align-items: flex-start;
+                background: var(--bg-alt);
+                padding: 24px 32px;
+                border-bottom: 1px solid var(--line);
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                gap: 20px;
+            }
+            .nav-links.open {
+                transform: translateY(0);
+            }
+            .burger {
+                display: block;
+            }
+            .hero {
+                padding: 150px 0 80px;
+            }
+            .contact-form {
+                padding: 24px 20px;
+            }
+        }
+        @media (max-width: 520px) {
+            .wrap {
+                padding: 0 20px;
+            }
+        }
+        :focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="spotlight-bg" id="spotlightBg"></div>
+    <div class="grain"></div>
+
+    <nav>
+        <div class="nav-inner wrap" style="padding-left:0;padding-right:0;">
+            <div class="logo">kojic<span class="dot">.dev</span></div>
+            <div class="nav-links" id="navLinks">
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <button class="burger" id="burger" aria-label="Open menu">☰</button>
+        </div>
+    </nav>
+
+    <header class="hero wrap">
+        <span class="eyebrow mono hero-anim" style="animation-delay:0.05s;">available for new projects</span>
+        <h1 class="hero-anim" style="animation-delay:0.18s;">I build websites and apps that <em>do their job</em>, not just look good.</h1>
+        <p class="hero-anim" style="animation-delay:0.32s;">My name is Kojic.dev. I do web development — from websites for small businesses to simpler applications. My focus is on speed, clean code, and visible results.</p>
+        <div class="hero-cta hero-anim" style="animation-delay:0.46s;">
+            <a href="#projects" class="btn btn-primary">View projects →</a>
+            <a href="#contact" class="btn btn-ghost">Contact me</a>
+        </div>
+    </header>
+
+    <section class="about" id="about">
+        <div class="wrap">
+            <div class="section-head reveal">
+                <span class="section-tag">About</span>
+                <h2>Short and clear</h2>
+            </div>
+            <div class="about-grid">
+                <div class="reveal">
+                    <p>Web development started as an interest in coding, and now it's grown into something I do seriously. I build websites for companies — from idea and design to deployment — and I'm gradually building experience with applications as well.</p>
+                    <p>I enjoy projects where the client has a concrete problem: they need an online presence, a faster website, or a tool that makes their work easier. I approach it practically — without unnecessary complexity, focusing on what actually gets used.</p>
+                    <p style="color:var(--ink-faint); font-size:0.9rem;">Languages: Serbian (native), English (professional working proficiency)</p>
+                </div>
+                <div class="stack-block reveal">
+                    <div class="stack-block-head">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="stack-block-body">
+                        <div class="stack-line">$ <b>stack</b> --list</div>
+                        <div class="tag-row">
+                            <span class="tag">HTML5</span>
+                            <span class="tag">CSS3</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">React</span>
+                            <span class="tag">Next.js</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">Tailwind CSS</span>
+                            <span class="tag">Git / GitHub</span>
+                            <span class="tag">REST API</span>
+                            <span class="tag">Vercel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="wrap">
+            <div class="section-head reveal">
+                <span class="section-tag">Services</span>
+                <h2>What I can build for you</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <span class="service-icon mono">01 / landing</span>
+                    <h3>Landing Page</h3>
+                    <p>A single-page site to present your product, service, or event — built fast, clean, and ready to convert visitors.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-icon mono">02 / business</span>
+                    <h3>Business Website</h3>
+                    <p>A full multi-page site for your company — services, pricing, contact, and everything clients need to find you.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-icon mono">03 / app</span>
+                    <h3>Simple Web App</h3>
+                    <p>Small tools and dashboards — client managers, booking forms, internal apps that make your daily work easier.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-icon mono">04 / support</span>
+                    <h3>Bug Fixes & Maintenance</h3>
+                    <p>Something broken or slow on your existing site? I can debug, optimize, and keep it running smoothly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects" id="projects">
+        <div class="wrap">
+            <div class="section-head reveal">
+                <span class="section-tag">Projects</span>
+                <h2>What I've worked on</h2>
+            </div>
+
+            <div class="project-card reveal">
+                <div class="browser-mock">
+                    <div class="browser-bar">
+                        <div class="dots"><span></span><span></span><span></span></div>
+                        <div class="url">topcleanbysuzana.ch</div>
+                    </div>
+                    <div class="browser-content">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                            <div style="font-family:'Fraunces',serif; font-style:italic; font-size:1.1rem; color:#fff;">TopClean<span style="color:#4A90D9; font-style:normal;"> by Suzana</span></div>
+                            <div style="font-size:0.75rem; color:#A79E8E; display:flex; gap:16px; align-items:center;">
+                                <span>+41 76 375 30 19</span>
+                                <span style="background:rgba(255,255,255,0.08); padding:2px 10px; border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:0.7rem;">DE</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 style="font-family:'Fraunces',serif; font-size:1.8rem; font-weight:400; color:#fff; line-height:1.15; margin-bottom:12px;">
+                                Reinheit auf <em style="color:#4A90D9; font-style:italic;">höchstem</em> Niveau
+                            </h2>
+                            <p style="color:#A79E8E; font-size:0.9rem; max-width:300px; margin-bottom:22px;">
+                                Hast du keine Zeit oder keine Lust zum Putzen? Keine Sorge – mit TOP-CLEAN by Suzana wird alles TOP sauber.
+                            </p>
+                            <a href="https://topcleanbysuzana.ch" target="_blank" rel="noopener" style="background:#4A90D9; color:#fff; border:none; padding:10px 22px; border-radius:30px; font-weight:500; font-size:0.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none;">
+                                🔗 Unsere Angebote entdecken →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-info">
+                    <span class="status">Live on the web</span>
+                    <h3>TopClean by Suzana</h3>
+                    <p>A complete business website for a professional cleaning company in Switzerland. It showcases all services (from move-in cleaning to building maintenance), with a clear pricing structure and contact section. The site is multilingual — German, English, Italian, French, and Spanish — to reach the entire Swiss clientele.</p>
+                    <div class="tag-row">
+                        <span class="tag">HTML/CSS/JS</span>
+                        <span class="tag">Multilingual</span>
+                        <span class="tag">Responsive</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://topcleanbysuzana.ch" target="_blank" rel="noopener" class="btn btn-primary">Visit site ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card reveal">
+                <div class="browser-mock">
+                    <div class="browser-bar">
+                        <div class="dots"><span></span><span></span><span></span></div>
+                        <div class="url">app-1-two-dusky.vercel.app</div>
+                    </div>
+                    <div class="browser-content" style="background:linear-gradient(160deg, #14120F 0%, #1f1b14 100%); padding:22px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                            <div style="font-family:'Fraunces',serif; font-style:italic; font-size:1.05rem; color:#fff;">Clients</div>
+                            <div style="background:var(--gold); color:#14120F; font-size:0.72rem; font-weight:600; padding:5px 12px; border-radius:20px;">+ Add Client</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; font-size:0.72rem;">
+                            <div style="display:grid; grid-template-columns:1.4fr 0.9fr 1fr; padding:8px 12px; color:#A79E8E; border-bottom:1px solid rgba(255,255,255,0.08);">
+                                <span>Client</span><span>Status</span><span>Budget</span>
+                            </div>
+                            <div style="display:grid; grid-template-columns:1.4fr 0.9fr 1fr; padding:9px 12px; color:#e8e4dc; align-items:center;">
+                                <span>Gamma Studio</span>
+                                <span style="color:var(--sage);">● active</span>
+                                <span>$8,300.00</span>
+                            </div>
+                            <div style="display:grid; grid-template-columns:1.4fr 0.9fr 1fr; padding:9px 12px; color:#e8e4dc; align-items:center; border-top:1px solid rgba(255,255,255,0.06);">
+                                <span>Acme Corp</span>
+                                <span style="color:var(--sage);">● active</span>
+                                <span>$60,000.00</span>
+                            </div>
+                            <div style="display:grid; grid-template-columns:1.4fr 0.9fr 1fr; padding:9px 12px; color:#7d7669; align-items:center; border-top:1px solid rgba(255,255,255,0.06);">
+                                <span>Beta LLC</span>
+                                <span>○ inactive</span>
+                                <span>$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-info">
+                    <span class="status">Live on the web</span>
+                    <h3>Client Management App</h3>
+                    <p>A web application for managing clients, projects, and tasks in one place. Clients can be added with their contact details and status, projects get linked to each client with budgets and progress tracking, giving a clear overview of active and inactive work at a glance.</p>
+                    <div class="tag-row">
+                        <span class="tag">React</span>
+                        <span class="tag">Next.js</span>
+                        <span class="tag">CRUD</span>
+                        <span class="tag">Vercel</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://app-1-two-dusky.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary">Visit app ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card reveal">
+                <div class="browser-mock">
+                    <div class="browser-bar">
+                        <div class="dots"><span></span><span></span><span></span></div>
+                        <div class="url">nanagradnja.com</div>
+                    </div>
+                    <div class="browser-content" style="background:linear-gradient(160deg, #05070d 0%, #0f1524 100%); padding:22px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <div style="font-family:'Fraunces',serif; font-style:italic; font-size:1.05rem; color:#e7ecf5;">NANA<span style="color:#d9a441; font-style:normal;"> Gradnja</span></div>
+                            <div style="font-size:0.72rem; color:#93a0b8; display:flex; gap:12px; align-items:center;">
+                                <span>060 565 9249</span>
+                                <span style="background:rgba(217,164,65,0.15); color:#d9a441; padding:2px 10px; border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:0.68rem;">RS</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 style="font-family:'Fraunces',serif; font-size:1.5rem; font-weight:400; color:#e7ecf5; line-height:1.2; margin-bottom:10px;">
+                                Gradimo vašu <em style="color:#d9a441; font-style:italic;">budućnost</em>
+                            </h2>
+                            <p style="color:#93a0b8; font-size:0.88rem; max-width:300px; margin-bottom:20px;">
+                                Od temelja do ključa u ruke — scroll-vođena animacija zgrade koja se zida dok skrolujete sajt.
+                            </p>
+                            <a href="https://nanagradnja.com" target="_blank" rel="noopener" style="background:#d9a441; color:#141005; border:none; padding:10px 22px; border-radius:30px; font-weight:600; font-size:0.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none;">
+                                🏗️ Pogledaj sajt →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-info">
+                    <span class="status">Live on the web</span>
+                    <h3>NANA Gradnja</h3>
+                    <p>Sajt za porodičnu građevinsku firmu, sa scroll-scrub animacijom zgrade koja se zida frejm po frejm dok korisnik skroluje. Kad se animacija završi, kamera stiže do ekrana monitora (desktop) ili telefona (mobilni), a ceo sajt dalje živi unutar tog ekrana — kao pravi HTML, ne kao slika, pa je tekst oštar na svakoj rezoluciji.</p>
+                    <div class="tag-row">
+                        <span class="tag">React</span>
+                        <span class="tag">Vite</span>
+                        <span class="tag">Tailwind CSS</span>
+                        <span class="tag">Scroll animation</span>
+                        <span class="tag">Netlify</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://nanagradnja.com" target="_blank" rel="noopener" class="btn btn-primary">Visit site ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-placeholder reveal">
+                <span class="mono">$ more projects in preparation...</span>
+                One more project coming soon.
+            </div>
+
+            <!-- TESTIMONIAL PLACEHOLDER: kad dobiješ prvi review sa Fiverr-a ili od klijenta,
+                 zameni ovaj komentar sa <div class="testimonial reveal"> blokom (citat + ime klijenta) -->
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="wrap">
+            <div class="section-head reveal">
+                <span class="section-tag">Contact</span>
+                <h2>Have a project in mind? <em>Let's talk.</em></h2>
+            </div>
+
+            <!-- Kontakt forma -->
+            <div class="contact-form reveal">
+                <form action="https://formsubmit.co/kojic.dev@gmail.com" method="POST">
+                    <!-- Zaštita od spam-a (CAPTCHA) -->
+                    <input type="hidden" name="_captcha" value="true">
+                    <!-- Sakrij Formsubmit logo (opciono) -->
+                    <input type="hidden" name="_template" value="table">
+                    <!-- Preusmeri na istu stranicu sa porukom (možeš promeniti URL) -->
+                    <input type="hidden" name="_next" value="https://kojicdev.netlify.app/#contact?success=true">
+
+                    <label for="name">Tvoje ime *</label>
+                    <input type="text" id="name" name="name" placeholder="Npr. Marko Marković" required>
+
+                    <label for="email">Tvoj email *</label>
+                    <input type="email" id="email" name="email" placeholder="marko@primer.com" required>
+
+                    <label for="subject">Naslov poruke</label>
+                    <input type="text" id="subject" name="subject" placeholder="Npr. Upit za izradu sajta">
+
+                    <label for="message">Poruka *</label>
+                    <textarea id="message" name="message" placeholder="Opiši ukratko šta ti treba..." required></textarea>
+
+                    <button type="submit" class="btn btn-primary">✉️ Pošalji poruku</button>
+                </form>
+            </div>
+
+            <!-- Dodatni linkovi -->
+            <div class="contact-links reveal">
+                <a href="https://github.com/kojicc-create" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+                <a href="https://www.fiverr.com/sellers/kojicdev" target="_blank" rel="noopener" class="btn btn-ghost">Fiverr</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="wrap footer-inner">
+            <span>© 2026 Kojic.dev. All rights reserved.</span>
+            <div class="footer-social">
+                <a href="mailto:kojic.dev@gmail.com">Email</a>
+                <a href="https://github.com/kojicc-create" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.fiverr.com/sellers/kojicdev" target="_blank" rel="noopener">Fiverr</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Spotlight background: follow the cursor
+        const spotlightBg = document.getElementById('spotlightBg');
+        window.addEventListener('mousemove', (e) => {
+            spotlightBg.style.setProperty('--mx', e.clientX + 'px');
+            spotlightBg.style.setProperty('--my', e.clientY + 'px');
+        });
+
+        // 3D tilt on the project browser mockup
+        const mock = document.querySelector('.browser-mock');
+        if (mock && window.matchMedia('(hover: hover)').matches) {
+            mock.style.transformStyle = 'preserve-3d';
+            mock.addEventListener('mousemove', (e) => {
+                const rect = mock.getBoundingClientRect();
+                const px = (e.clientX - rect.left) / rect.width - 0.5;
+                const py = (e.clientY - rect.top) / rect.height - 0.5;
+                mock.style.transform = `rotate(0deg) perspective(800px) rotateX(${py * -8}deg) rotateY(${px * 10}deg) translateY(-4px)`;
+            });
+            mock.addEventListener('mouseleave', () => {
+                mock.style.transform = '';
+            });
+        }
+
+        const burger = document.getElementById('burger');
+        const navLinks = document.getElementById('navLinks');
+        burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+        navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+        const revealEls = document.querySelectorAll('.reveal');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        revealEls.forEach(el => io.observe(el));
+
+        // Ako je poslata forma i vraćeno na stranicu sa parametrom success, prikaži obaveštenje
+        if (window.location.search.includes('success=true')) {
+            // Možeš da dodaš skriptu za prikaz poruke, npr. alert ili dodatni element
+            // Pošto Formsubmit automatski prikazuje svoju "Hvala" stranicu, ovo je opciono.
+            // Ali ako želiš da prikažeš poruku unutar sajta, možeš dodati kod.
+        }
+    </script>
+</body>
+</html>
